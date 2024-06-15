@@ -2,3 +2,5 @@
 *.model
 *.safetoken
 *.pyc
+logs/
+output/
