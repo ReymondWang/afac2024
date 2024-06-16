@@ -38,19 +38,20 @@ def optimize_parameters(output: str, fund_standard_name: list, stock_standard_na
         Result:
             优化后的LLM的输出
         """
-    
-    raw = json.loads(output)
-
-    api_list = raw[RES_API_KEY]
-    for api in api_list:
-        # api[RES_PARAM_KEY] = reorder(api[RES_PARAM_KEY])
-        if api[RES_TOOL_NAME_KEY] == "基金查询" and api[RES_API_NAME_KEY] == "查询代码":
-            api[RES_PARAM_KEY] = switch_standard_name(api[RES_PARAM_KEY], fund_standard_name)
-        elif api[RES_TOOL_NAME_KEY] == "股票查询" and api[RES_API_NAME_KEY] == "查询代码":
-            api[RES_PARAM_KEY] = switch_standard_name(api[RES_PARAM_KEY], stock_standard_name)
-            
-    raw[RES_API_KEY] = api_list
-    return json.dumps(raw, ensure_ascii=False)
+    try:
+        raw = json.loads(output)
+        api_list = raw[RES_API_KEY]
+        for api in api_list:
+            # api[RES_PARAM_KEY] = reorder(api[RES_PARAM_KEY])
+            if api[RES_TOOL_NAME_KEY] == "基金查询" and api[RES_API_NAME_KEY] == "查询代码":
+                api[RES_PARAM_KEY] = switch_standard_name(api[RES_PARAM_KEY], fund_standard_name)
+            elif api[RES_TOOL_NAME_KEY] == "股票查询" and api[RES_API_NAME_KEY] == "查询代码":
+                api[RES_PARAM_KEY] = switch_standard_name(api[RES_PARAM_KEY], stock_standard_name)
+                
+        raw[RES_API_KEY] = api_list
+        return json.dumps(raw, ensure_ascii=False)
+    except Exception:
+        return output
     
     
 def reorder(params: list) -> list:

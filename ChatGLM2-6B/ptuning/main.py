@@ -55,6 +55,9 @@ def main():
     else:
         model_args, data_args, training_args = parser.parse_args_into_dataclasses()
 
+    print("-----model_args-----")
+    print(model_args)
+
     # Setup logging
     logging.basicConfig(
         format="%(asctime)s - %(levelname)s - %(name)s - %(message)s",
@@ -286,6 +289,9 @@ def main():
 
     # Metric
     def compute_metrics(eval_preds):
+        print("--------------------------------eval_preds--------------------------------")
+        print(eval_preds)
+        
         preds, labels = eval_preds
         if isinstance(preds, tuple):
             preds = preds[0]
