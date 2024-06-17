@@ -8,3 +8,14 @@ python finetune_hf.py data ../../../Model/THUDM/chatglm3-6b configs/ptuning_v2.y
 
 ## 注意
 transformer的版本必须时4.40.0，否则微调到evaluation阶段会报错
+
+## 多卡微调
+
+需要使用conda安装mpi4py
+```shell
+conda install mpi4py 
+```
+
+```shell
+OMP_NUM_THREADS=1 torchrun --standalone --nnodes=1 --nproc_per_node=4  finetune_hf.py  data  ../../../Model/THUDM/chatglm3-6b  configs/sft.yaml
+```
