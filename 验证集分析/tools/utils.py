@@ -62,11 +62,20 @@ def compare_lists(a:list, b:list):
                     found_in_b = True
                     break
             if found_in_b:  # b中多出了 j->k
+                result_a.append(a[i])
                 result_b.append(f'<span style="color: red">{"<br>".join(b[j:k])}</span>')
-                j = k+1
-            else: # a 多
-                result_a.append(f'<span style="color: green">{a[i]}</span>')
-            i += 1
+                i += 1
+                j = k
+            else: 
+                if len(a)-i > len(b)-j: # a 多
+                    result_a.append(f'<span style="color: green">{a[i]}</span>')
+                    i += 1
+                else :
+                    result_b.append(f'<span style="color: red">{b[j]}</span>')
+                    result_a.append(f'<span style="color: green">{a[i]}</span>')
+                    i += 1
+                    j += 1 
+
     
     # 处理剩余的元素
     while i < len(a):
@@ -88,8 +97,9 @@ def highlight_differences(row,col_a,col_b):
 
 if __name__=='__main__':
     # compare_lists示例
-    a = ['a', 'b', 'c', 'd', 'e']
-    b = ['b', 'd','e','g']
+    a = ["('股票查询', '查询代码')","('股票查询', '查询当前价')","('数值计算', '乘法计算')"]
+    b = ["('股票查询', '查询代码')","('股票查询', '查询收盘价')","('股票查询', '查询收盘价')",
+         "('数值计算', '乘法计算')","('数值计算', '加法计算')"]
     result_a, result_b = compare_lists(a, b)
     from IPython.display import display, HTML
     display(HTML(f"A: {result_a}"))
