@@ -4,3 +4,4 @@
 *.pyc
 logs/
 output/
+*-checkpoint.*
