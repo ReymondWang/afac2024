@@ -19,3 +19,8 @@ conda install mpi4py
 ```shell
 OMP_NUM_THREADS=1 torchrun --standalone --nnodes=1 --nproc_per_node=4  finetune_hf.py  data  ../../../Model/THUDM/chatglm3-6b  configs/sft.yaml
 ```
+
+## 模型合并
+```shell
+python model_export_hf.py ./output/checkpoint-200/ --out-dir ./models/chatglm3-6b-01
+```
