@@ -5,3 +5,4 @@
 logs/
 output/
 models/
+*-checkpoint.*
