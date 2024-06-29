@@ -95,13 +95,13 @@ class ApiSpliter:
         
         self.aggregate_api_detail(api_dict)
         
-        df_train = pd.read_excel(os.path.join(self.current_path, "../raw_data/train.xlsx"))
-        df_dev = pd.read_excel(os.path.join(self.current_path, "../raw_data/dev.xlsx"))
-        df_test_a = pd.read_excel(os.path.join(self.current_path, "../raw_data/test_a.xlsx"))
+        df_train = pd.read_excel(os.path.join(self.current_path, "../raw_data/train_1.xlsx"))
+        df_dev = pd.read_excel(os.path.join(self.current_path, "../raw_data/dev_1.xlsx"))
+        # df_test_a = pd.read_excel(os.path.join(self.current_path, "../raw_data/test_a.xlsx"))
         
-        self.attach_api_name(df_train, api_dict, os.path.join(self.current_path, "../data/train_api.json"))
-        self.attach_api_name(df_dev, api_dict, os.path.join(self.current_path, "../data/dev_api.json"))
-        self.attach_api_name(df_test_a, api_dict, os.path.join(self.current_path, "../data/test_a_api.json"))
+        self.attach_api_name(df_train, api_dict, os.path.join(self.current_path, "../data/train_api_1.json"))
+        self.attach_api_name(df_dev, api_dict, os.path.join(self.current_path, "../data/dev_api_1.json"))
+        # self.attach_api_name(df_test_a, api_dict, os.path.join(self.current_path, "../data/test_a_api.json"))
     
     
     def remove_parameters(self, raw_json_str) -> str:
