@@ -20,5 +20,5 @@ conda install mpi4py
 ```
 
 ```shell
-OMP_NUM_THREADS=1 torchrun --standalone --nnodes=1 --nproc_per_node=8  finetune_hf.py  data  ../../../Model/THUDM/glm-4-9b-chat  configs/sft.yaml
+OMP_NUM_THREADS=1 torchrun --standalone --nnodes=1 --nproc_per_node=8  finetune.py  data  ../../../Model/THUDM/glm-4-9b-chat  configs/sft.yaml
 ```
