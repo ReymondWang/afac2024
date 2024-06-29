@@ -5317,8 +5317,8 @@
     },
     {
         "category_name": "通用",
-        "tool_name": "逻辑计算",
-        "api_name": "与计算",
+        "tool_name": "逻辑运算",
+        "api_name": "与运算",
         "api_description": "这个API接口的功能是接收两个列表作为输入，返回取交集的列表。",
         "parameters": {
             "properties": {
@@ -5339,8 +5339,8 @@
     },
     {
         "category_name": "通用",
-        "tool_name": "逻辑计算",
-        "api_name": "或计算",
+        "tool_name": "逻辑运算",
+        "api_name": "或运算",
         "api_description": "这个API接口的功能是接收两个列表作为输入，返回取并集的列表。",
         "parameters": {
             "properties": {

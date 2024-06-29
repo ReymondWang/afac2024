@@ -1,1 +1,42 @@
-{"relevant APIs": [{"api_id": "0", "api_name": "查询代码", "required_parameters": [["银河鑫利灵活配置混合型证券投资基金A类"]], "rely_apis": [], "tool_name": "基金查询"}, {"api_id": "1", "api_name": "查询赎回费率", "required_parameters": ["api_0的结果"], "rely_apis": ["0"], "tool_name": "基金查询"}, {"api_id": "2", "api_name": "查询申购费率", "required_parameters": ["api_0的结果"], "rely_apis": ["0"], "tool_name": "基金查询"}, {"api_id": "3", "api_name": "减法计算", "required_parameters": ["api_1的结果", "api_2的结果"], "rely_apis": ["1", "2"], "tool_name": "数值计算"}, {"api_id": "4", "api_name": "乘法计算", "required_parameters": ["api_3的结果", "100000"], "rely_apis": ["3"], "tool_name": "数值计算"}], "result": ["api_4的结果"]}
+{
+    "relevant APIs": [
+        {
+            "api_id": "0",
+            "api_name": "查询代码",
+            "required_parameters": [
+                [
+                    "三羊马"
+                ]
+            ],
+            "rely_apis": [],
+            "tool_name": "股票查询"
+        },
+        {
+            "api_id": "1",
+            "api_name": "查询最高价",
+            "required_parameters": [
+                "api_0的结果",
+                "今日"
+            ],
+            "rely_apis": [
+                "0"
+            ],
+            "tool_name": "股票查询"
+        },
+        {
+            "api_id": "2",
+            "api_name": "除法计算",
+            "required_parameters": [
+                "1000000",
+                "api_1的结果"
+            ],
+            "rely_apis": [
+                "1"
+            ],
+            "tool_name": "数值计算"
+        }
+    ],
+    "result": [
+        "api_2的结果"
+    ]
+}
