@@ -1,10 +1,10 @@
 data_config:
-  train_file: train_api.json
-  val_file: dev_api.json
-  test_file: dev_api.json
+  train_file: train_cloze_test.json
+  val_file: dev_cloze_test.json
+  test_file: dev_cloze_test.json
   num_proc: 1
-max_input_length: 4096
-max_output_length: 128
+max_input_length: 1024
+max_output_length: 1024
 training_args:
   # see `transformers.Seq2SeqTrainingArguments`
   output_dir: ./output
@@ -34,7 +34,7 @@ training_args:
   predict_with_generate: true
   # see `transformers.GenerationConfig`
   generation_config:
-    max_new_tokens: 128
+    max_new_tokens: 1024
   # set your absolute deepspeed path here
   #deepspeed: ds_zero_2.json
   # set to true if train with cpu.
