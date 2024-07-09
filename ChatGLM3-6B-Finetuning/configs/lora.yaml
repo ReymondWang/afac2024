@@ -1,7 +1,7 @@
 data_config:
-  train_file: train_cloze_test.json
-  val_file: dev_cloze_test.json
-  test_file: dev_cloze_test.json
+  train_file: train_err.json
+  val_file: eval_err.json
+  test_file: eval_err.json
   num_proc: 1
 max_input_length: 1024
 max_output_length: 1024
