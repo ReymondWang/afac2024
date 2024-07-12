@@ -1,0 +1,45 @@
+seed: 0
+exp_name: chatglm3-6b
+batch_size: 1
+eval_batch_size: 16
+debug: false
+fsdp_port: null
+wandb:
+  enabled: true
+  entity: null
+  project: direct-preference-optimization
+local_dirs:
+- /scr-ssd
+- /scr
+- .cache
+sample_during_eval: true
+n_eval_model_samples: 16
+do_first_eval: true
+local_run_dir: ${get_local_run_dir:${exp_name},${local_dirs}}
+lr: 5.0e-07
+gradient_accumulation_steps: 1
+max_grad_norm: 10.0
+max_length: 2048
+max_prompt_length: 1024
+n_epochs: 1
+n_examples: null
+n_eval_examples: 256
+trainer: BasicTrainer
+optimizer: RMSprop
+warmup_steps: 150
+activation_checkpointing: false
+eval_every: 100
+minimum_log_interval_secs: 1.0
+model:
+  name_or_path: ../../train-result/2024-06-19/checkpoint-5000
+  tokenizer_name_or_path: null
+  archive: null
+  block_name: GLMBlock
+  policy_dtype: float32
+  fsdp_policy_mp: null
+  reference_dtype: float16
+loss:
+  name: dpo
+  beta: 0.9
+  label_smoothing: 0
+  reference_free: false

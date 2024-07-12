@@ -1,0 +1,2 @@
+[2024-07-12 23:31:16,394][accelerate.utils.modeling][INFO] - We will use 90% of the memory on device 0 for storing the model, and 10% for the buffer to avoid OOM. You can set `max_memory` in to a higher value to use more memory (at your own risk).
+[2024-07-12 23:35:51,554][root][WARNING] - Some parameters are on the meta device device because they were offloaded to the cpu.
