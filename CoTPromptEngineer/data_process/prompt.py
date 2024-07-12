@@ -453,7 +453,7 @@ calculation_cot_prompt = '''
                 2. 再调用 乘法计算(api_1) 将 api_0输出的相对值 乘以100000元，得到现在真实的总资金；
                 3. 最终输出最终结果，即 api_1 的结果。
         于是最终标准的json格式结果为:
-        {"relevant APIs": [{"api_id": "0", "api_name": "加法计算", "required_parameters": ["30%", "100%"], "rely_apis": [], "tool_name": "数值计算"}, {"api_id": "1", "api_name": "乘法计算", "required_parameters": ["api_0的结果", "100000"], "rely_apis": ["0"], "tool_name": "数值计算"}], "result": ["api_2的结果"]}    
+            {"relevant APIs": [{"api_id": "0", "api_name": "加法计算", "required_parameters": ["30%", "100%"], "rely_apis": [], "tool_name": "数值计算"}, {"api_id": "1", "api_name": "乘法计算", "required_parameters": ["api_0的结果", "100000"], "rely_apis": ["0"], "tool_name": "数值计算"}], "result": ["api_2的结果"]}    
     </output>
 </示例>
 
