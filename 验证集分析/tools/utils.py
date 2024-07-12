@@ -95,6 +95,35 @@ def highlight_differences(row,col_a,col_b):
     a_list,b_list = compare_lists(a_list,b_list)
     return pd.Series({col_a:'<br>'.join(a_list),col_b:'<br>'.join(b_list)})
 
+FUND_INQUIRY = 1
+FUND_SELECTION = 2
+STOCK_INQUIRY = 4
+STOCK_SELECTION = 8
+
+def get_type_from_json(label:str):
+    try:
+        label_d = eval(label)
+    except:
+        print(f'error in parsing {label}')
+        return None
+    api_list = label_d['relevant APIs']
+    type_ = 0
+    for api in api_list:
+        if 'tool_name' not in api:
+            print(f'error in parsing {api}')
+            continue
+        if api['tool_name'] == '基金查询':
+            type_ |= FUND_INQUIRY
+        elif api['tool_name'] == '条件选基':
+            type_ |= FUND_SELECTION
+        elif api['tool_name'] == '股票查询':
+            type_ |= STOCK_INQUIRY
+        elif api['tool_name'] == '条件选股':
+            type_ |= STOCK_SELECTION
+    return type_
+    
+
+
 if __name__=='__main__':
     # compare_lists示例
     a = ["('股票查询', '查询代码')","('股票查询', '查询当前价')","('数值计算', '乘法计算')"]
