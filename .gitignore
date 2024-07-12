@@ -6,3 +6,4 @@ logs/
 output/
 models/
 *-checkpoint.*
+.cache
