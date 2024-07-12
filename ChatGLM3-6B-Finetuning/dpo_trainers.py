@@ -161,7 +161,8 @@ class BasicTrainer(object):
             self.tokenizer.pad_token_id = self.tokenizer.eos_token_id
 
         data_iterator_kwargs = dict(
-            names=config.datasets,
+            data_dir=config.data_dir,
+            data_files=config.data_files,
             tokenizer=self.tokenizer,
             shuffle=True,
             max_length=config.max_length,
