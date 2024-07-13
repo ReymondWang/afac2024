@@ -36,7 +36,7 @@ def get_dataset(data_dir: str, data_files: str, split: str, split_ratio: float =
         responses = [label, predict]
         
         # 因为偏好数据集的排序是选中的在前面，而这个数据集本身只会有两个选项，所以固定写成(1, 2)。
-        data[prompt]['pairs'].append((1, 2))
+        data[prompt]['pairs'].append((0, 1))
         data[prompt]['responses'].extend(responses)
         
     assert set(list(data.values())[0].keys()) == {'responses', 'pairs'}, f"Unexpected keys in dataset: {list(list(data.values())[0].keys())}"
@@ -159,7 +159,6 @@ def get_batch_iterator(data_dir: str,
     """Get an iterator over batches of data. Stops after n_epochs or n_examples, whichever comes first.
 
     Args:
-        names: Names of datasets to use.
         tokenizer: Tokenizer to use.
         split: Which split to use.
         batch_size: Batch size.

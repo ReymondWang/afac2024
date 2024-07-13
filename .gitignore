@@ -4,6 +4,7 @@
 *.pyc
 logs/
 output/
+outputs/
 models/
 *-checkpoint.*
-.cache
+.cache/
