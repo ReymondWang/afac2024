@@ -55,7 +55,7 @@ def load_model_and_tokenizer(model_dir: Union[str, Path]) -> tuple[ModelType, To
     )
     return model, tokenizer
 
-def transformers_inference(prompt:str, model_dir: Union[str,Path], top_p=0.7, temperature=0.6) -> str :
+def transformers_inference(input:str, model_dir: Union[str,Path], top_p=0.7, temperature=0.6) -> str :
 
     model, tokenizer = load_model_and_tokenizer(model_dir)
     response,_ = model.chat(tokenizer=tokenizer, query=input, history=[], top_p=top_p, temperature=temperature)
