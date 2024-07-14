@@ -29,3 +29,10 @@ OMP_NUM_THREADS=1 torchrun --standalone --nnodes=1 --nproc_per_node=6  finetune_
 ```shell
 python model_export_hf.py ./output/checkpoint-200/ --out-dir ./models/chatglm3-6b-01
 ```
+
+
+## DPO在单卡A800上执行
+```shell
+export PYTORCH_CUDA_ALLOC_CONF="max_split_size_mb:512"
+python finetune_dpo.py
+```

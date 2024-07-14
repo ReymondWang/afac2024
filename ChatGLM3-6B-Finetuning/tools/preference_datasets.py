@@ -35,7 +35,7 @@ def get_dataset(data_dir: str, data_files: str, split: str, split_ratio: float =
         
         responses = [label, predict]
         
-        # 因为偏好数据集的排序是选中的在前面，而这个数据集本身只会有两个选项，所以固定写成(1, 2)。
+        # 因为偏好数据集的排序是选中的在前面，而这个数据集本身只会有两个选项，所以固定写成(0, 1)。
         data[prompt]['pairs'].append((0, 1))
         data[prompt]['responses'].extend(responses)
         

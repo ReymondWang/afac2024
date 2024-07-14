@@ -28,6 +28,7 @@ from tools.common_utils import (
     get_block_class_from_model,
     rank0_print,
     get_local_dir,
+    disable_dropout,
 )
 import numpy as np
 import wandb
@@ -69,17 +70,23 @@ def preference_loss(policy_chosen_logps: torch.FloatTensor,
     """
     pi_logratios = policy_chosen_logps - policy_rejected_logps
     ref_logratios = reference_chosen_logps - reference_rejected_logps
+    
+    rank0_print(f'pi_logratios: {pi_logratios}; ref_logratios: {ref_logratios};')
 
     if reference_free:
         ref_logratios = 0
 
     logits = pi_logratios - ref_logratios  # also known as h_{\pi_\theta}^{y_w,y_l}
+    
+    rank0_print(f'logits: {logits};')
 
     if ipo:
         losses = (logits - 1/(2 * beta)) ** 2  # Eq. 17 of https://arxiv.org/pdf/2310.12036v2.pdf
     else:
         # Eq. 3 https://ericmitchell.ai/cdpo.pdf; label_smoothing=0 gives original DPO (Eq. 7 of https://arxiv.org/pdf/2305.18290.pdf)
         losses = -F.logsigmoid(beta * logits) * (1 - label_smoothing) - F.logsigmoid(-beta * logits) * label_smoothing
+        
+        rank0_print(f'losses: {losses};')
 
     chosen_rewards = beta * (policy_chosen_logps - reference_chosen_logps).detach()
     rejected_rewards = beta * (policy_rejected_logps - reference_rejected_logps).detach()
@@ -235,8 +242,14 @@ class BasicTrainer(object):
 
         if loss_config.name in {'dpo', 'ipo'}:
             policy_chosen_logps, policy_rejected_logps = self.concatenated_forward(self.policy, batch)
+            
+            rank0_print(f'batch_prompt: {batch["prompt"]}; batch_chosen: {batch["chosen"]}; batch_reject: {batch["batch_reject"]}')
+            rank0_print(f'policy_chosen_logps: {policy_chosen_logps}; policy_rejected_logps: {policy_chosen_logps};')
+            
             with torch.no_grad():
                 reference_chosen_logps, reference_rejected_logps = self.concatenated_forward(self.reference_model, batch)
+                
+                rank0_print(f'reference_chosen_logps: {reference_chosen_logps}; reference_rejected_logps: {reference_rejected_logps};')
 
             if loss_config.name == 'dpo':
                 loss_kwargs = {'beta': loss_config.beta, 'reference_free': loss_config.reference_free, 'label_smoothing': loss_config.label_smoothing, 'ipo': False}
@@ -542,3 +555,4 @@ class TensorParallelTrainer(BasicTrainer):
     
         self.write_state_dict(self.example_counter, policy_state_dict, metrics, 'policy.pt', output_dir)
         del policy_state_dict
+        

@@ -13,7 +13,7 @@ archive: null
 block_name: GLMBlock
 
 # the dtype for the policy parameters/optimizer state
-policy_dtype: float32
+policy_dtype: float16
 
 # the mixed precision dtype if using FSDP; defaults to the same as the policy
 fsdp_policy_mp: null
