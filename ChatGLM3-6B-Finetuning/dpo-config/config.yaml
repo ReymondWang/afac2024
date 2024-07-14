@@ -38,7 +38,7 @@ sample_during_eval: false
 n_eval_model_samples: 16
 
 # whether to eval at the very beginning of training
-do_first_eval: true
+do_first_eval: false
 
 # an OmegaConf resolver that returns the local run directory, calling a function in utils.py
 local_run_dir: ${get_local_run_dir:${exp_name},${local_dirs}}

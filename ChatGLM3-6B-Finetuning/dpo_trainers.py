@@ -229,7 +229,13 @@ class BasicTrainer(object):
         """
         concatenated_batch = concatenated_inputs(batch)
         all_logits = model(concatenated_batch['concatenated_input_ids'], attention_mask=concatenated_batch['concatenated_attention_mask']).logits.to(torch.float32)
+        
+        rank0_print(f'all_logits: {all_logits};')
+        
         all_logps = _get_batch_logps(all_logits, concatenated_batch['concatenated_labels'], average_log_prob=False)
+        
+        rank0_print(f'all_logps: {all_logps};')
+        
         chosen_logps = all_logps[:batch['chosen_input_ids'].shape[0]]
         rejected_logps = all_logps[batch['chosen_input_ids'].shape[0]:]
         return chosen_logps, rejected_logps
@@ -243,7 +249,7 @@ class BasicTrainer(object):
         if loss_config.name in {'dpo', 'ipo'}:
             policy_chosen_logps, policy_rejected_logps = self.concatenated_forward(self.policy, batch)
             
-            rank0_print(f'batch_prompt: {batch["prompt"]}; batch_chosen: {batch["chosen"]}; batch_reject: {batch["batch_reject"]}')
+            rank0_print(f'batch_prompt: {batch["prompt"]}; batch_chosen: {batch["chosen"]}; batch_rejected: {batch["rejected"]}')
             rank0_print(f'policy_chosen_logps: {policy_chosen_logps}; policy_rejected_logps: {policy_chosen_logps};')
             
             with torch.no_grad():
