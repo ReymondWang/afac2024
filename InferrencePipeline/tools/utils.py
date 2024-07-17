@@ -1,16 +1,18 @@
 import json
 import difflib
 import pandas as pd 
-from .prompt import (fundQuery_cot_prompt,
-                    fundSelect_cot_prompt,
-                    stockQuery_cot_prompt,
-                    stockSelect_cot_prompt,
-                    calculation_cot_prompt)
+from .prompt import *
 FUND_INQUIRY = 1
 FUND_SELECTION = 2
 STOCK_INQUIRY = 4
 STOCK_SELECTION = 8
-PROMPT_MAP = {1:fundQuery_cot_prompt, 2:fundSelect_cot_prompt, 4:stockQuery_cot_prompt, 8:stockSelect_cot_prompt, 0:calculation_cot_prompt}
+PROMPTS_MAP = {
+    0:[cot_generate_common_prompt,common_prompt,common_prompt_with_correct],
+    1:[cot_generate_fund_query_prompt,fund_query_prompt,fund_query_prompt_with_correct],
+    2:[cot_generate_fund_select_prompt,fund_select_prompt,fund_select_prompt_with_correct],
+    4:[cot_generate_stock_query_prompt,stock_query_prompt,stock_query_prompt_with_correct],
+    8:[cot_generate_stock_select_prompt,stock_select_prompt,stock_select_prompt_with_correct],
+}
 
 
 def read_jsonl(file_path) -> list:
@@ -55,10 +57,11 @@ def get_type_from_label(label:str):
     return type_
 
 
-def get_prompt(row,stock_names,fund_names):
+def get_prompt(row,glm3_output,stock_names,fund_names):
     '''
     根据Query、Label生成对应的Prompt
     依赖：原始input(query), type_, products
+    生成两套：一套普通的，一套带有glm3输出的纠错型
     '''
     query = row['query']
     # 1. get products 50 if needed
@@ -68,30 +71,34 @@ def get_prompt(row,stock_names,fund_names):
     elif row['type_'] & FUND_INQUIRY:
         products = difflib.get_close_matches(query,fund_names,n=50,cutoff=0.0001)
         query += '\n    query中提到的产品标准名可能是：' + '、'.join(products)
-    # 2. get into class prompt
-    return PROMPT_MAP[row['type_']].replace('<QUERY>',query)
+    res = {}
+    res['common_prompt'] = PROMPTS_MAP[row['type_']][1].replace('<QUERY>',query)
+    res['correct_prompt'] = PROMPTS_MAP[row['type_']][2].replace('<QUERY>',query)\
+        .replace('<GLM3_ANSWER>',f'基础模型给出的答案是：{glm3_output}')
+    return res
     
-
+def process_label(label:str):
+    '''
+    处理label中的一些问题
+    '''
+    # df["label"] = df["label"].str.replace("\"api_name\": \"查询","\"api_name\": \"")
+    # df["label"] = df["label"].str.replace("基金份额类型(A、B、C)","基金份额类型")
+    # df["label"] = df["label"].str.replace("每股经营性现资金流","每股经营性现金流")
+    label = label.replace("\"api_name\": \"查询","\"api_name\": \"")
+    label = label.replace("基金份额类型(A、B、C)","基金份额类型")
+    label = label.replace("每股经营性现资金流","每股经营性现金流")
+    return label
 '''
 Post Process
 '''
-def post_process(glm4_output:str):
+def post_process(glm4_output:str)->str:
     '''
     从GLM4输出的带CoT的答案中解析出最终标准Json
-    例：
-    <output>
-        思考过程:
-            首先我们可以将该问题分解为以下几个步骤：
-                1. query中提出了两个选股条件：上个月的成交金额是将近2986亿，今天收盘时价格是27块84分；
-                2. 根据第一个条件，调用 条件选股-成交额(api_0) 获取上个月成交额 等于 2986亿 的股票代码列表;
-                3. 根据第二个条件，调用 条件选股-收盘价(api_1) 获取今天收盘价 等于 27.84 的股票代码列表;
-                4. 最后，根据问题，需要同时满足以上两个条件，调用 逻辑运算-与运算(api_2) 将以上两个结果取交集，得到最终结果;
-                5. 最终输出最终结果，即 api_2 的结果。
-        于是最终标准的json格式结果为:
-            {"relevant APIs": [{"api_id": "0", "tool_name": "条件选股", "api_name": "成交额", "required_parameters": ["等于", "298600000000.00", "上月"], "rely_apis": []}, {"api_id": "1", "tool_name": "条件选股", "api_name": "收盘价", "required_parameters": ["等于", "27.84", "今日"], "rely_apis": []}, {"api_id": "2", "tool_name": "逻辑运算", "api_name": "与运算", "required_parameters": ["api_0的结果", "api_1的结果"], "rely_apis": ["0", "1"]}], "result": ["api_2的结果"]}
-    </output>
+    包含：
+        1. 从带有CoT的output中抽取json
+    
     '''
-    standard_output = glm4_output.split('于是最终标准的json格式结果为:')[1].strip()
+    standard_output = glm4_output.split('于是最终标准的json格式结果为:')[1].replace('</output>','').strip()
     # 格式验证
     try:
         standard_output = json.loads(standard_output)
@@ -106,7 +113,7 @@ def post_process(glm4_output:str):
         for api in standard_output['relevant APIs']:
             if 'tool_name' not in api:
                 print(f'Json格式不正确:tool_name未找到 {standard_output}')
-                return None
+                return None                
             if 'api_name' not in api:
                 print(f'Json格式不正确:api_name未找到 {standard_output}')
                 return None
@@ -116,7 +123,15 @@ def post_process(glm4_output:str):
             if 'rely_apis' not in api:
                 print(f'Json格式不正确:rely_apis未找到 {standard_output}')
                 return None
+            # 后处理
+            if api['tool_name'] in {'基金查询','条件选基','股票查询','条件选股'}:
+                api['api_name'] = '查询'+api['api_name']
+                if api['tool_name'] == '条件选基' and api['api_name']=='查询基金份额类型':
+                    api['api_name'] = '查询基金份额类型(A、B、C)'
+                elif api['tool_name'] == '条件选股' and api['api_name']=='查询每股经营性现金流':
+                    api['api_name'] = '查询每股经营性现资金流'
     if 'result' not in standard_output:
         print(f'Json格式不正确:result未找到 {standard_output}')
         return None
+    
     return json.dumps(standard_output,ensure_ascii=False)
