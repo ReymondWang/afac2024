@@ -28,12 +28,38 @@ def load_model_and_tokenizer(model_dir: Union[str, Path]) -> tuple[ModelType, To
         )
         tokenizer_dir = model_dir
     tokenizer = AutoTokenizer.from_pretrained(
-        tokenizer_dir, trust_remote_code=True
+        tokenizer_dir, trust_remote_code=True,
+        encode_special_tokens=True, use_fast=False
     )
     return model, tokenizer
 
-def transformers_inference(input:str, model: ModelType, tokenizer: TokenizerType, top_p=0.7, temperature=0.6) -> str :
+def glm3_inference(input:str, model: ModelType, tokenizer: TokenizerType, top_p=0.7, temperature=0.6) -> str :
 
     response,_ = model.chat(tokenizer=tokenizer, query=input, history=[], top_p=top_p, temperature=temperature, max_length=2048)
     
+    return response
+
+def glm4_inference(input_:dict, model: ModelType, tokenizer: TokenizerType, top_p=0.8, temperature=0.8) -> str:
+    
+    messages = [input_] # {'role':'user','content':'...'}
+    
+    inputs = tokenizer.apply_chat_template(
+            messages,
+            add_generation_prompt=True,
+            tokenize=True,
+            return_tensors="pt"
+        ).to(model.device)
+    
+    generate_kwargs = {
+            "input_ids": inputs,
+            "max_new_tokens": 1024,
+            "do_sample": True,
+            "top_p": top_p,
+            "temperature": temperature,
+            "repetition_penalty": 1.2,
+            "eos_token_id": model.config.eos_token_id,
+        }
+    
+    outputs = model.generate(**generate_kwargs)
+    response = tokenizer.decode(outputs[0][len(inputs[0]):], skip_special_tokens=True).strip()
     return response
