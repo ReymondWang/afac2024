@@ -134,9 +134,9 @@ examples = {
             3. 获取股票代码后，调用 股票查询-最高价(api_1) 获取今日“三羊马”的最高价；
             4. 根据问题，用户打算用100万元购买股票，我们需要计算在最高价下能购买多少股；
             5. 调用 数值计算-除法计算(api_2)，将100万元除以最高价，计算出能购买的股票数量；
-            6. 最终输出能购买的股票数量，即 api_2 的结果。'}
+            6. 最终输出能购买的股票数量，即 api_2 的结果。
             """,
-        'glm3_answer':'{"relevant APIs": [{"api_id": "0", "api_name": "查询代码", "required_parameters": [["三羊马"]], "rely_apis": [], "tool_name": "股票查询"}, {"api_id": "1", "api_name": "查询最高价", "required_parameters": ["api_0的结果", "今日"], "rely_apis": ["0"], "tool_name": "股票查询"}, {"api_id": "2", "api_name": "除法计算", "required_parameters": ["1000000", "api_1的结果"], "rely_apis": ["1"], "tool_name": "数值计算"}, {"api_id": "3", "api_name": "乘法计算", "required_parameters": ["api_2的结果", "api_1的结果"], "rely_apis": ["1", "2"], "tool_name": "数值计算"}], "result": ["api_3的结果"]}',
+        'glm3_answer':'{"relevant APIs": [{"api_id": "0", "api_name": "代码", "required_parameters": [["三羊马"]], "rely_apis": [], "tool_name": "股票查询"}, {"api_id": "1", "api_name": "最高价", "required_parameters": ["api_0的结果", "今日"], "rely_apis": ["0"], "tool_name": "股票查询"}, {"api_id": "2", "api_name": "除法计算", "required_parameters": ["1000000", "api_1的结果"], "rely_apis": ["1"], "tool_name": "数值计算"}, {"api_id": "3", "api_name": "乘法计算", "required_parameters": ["api_2的结果", "api_1的结果"], "rely_apis": ["1", "2"], "tool_name": "数值计算"}], "result": ["api_3的结果"]}',
         'correction':'基础模型给出的答案有误：用户问题要求给出能买多少股，在api_2调用后（总金额除以最高价）就已经得出了股数，不需要再做乘法计算。'
     },
     'fundSelect':{
