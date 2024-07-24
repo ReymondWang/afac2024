@@ -31,13 +31,15 @@ class CreateTrainData:
                 m.write(json.dumps(single_data,ensure_ascii=False)+'\n')
 
     def run(self):
-        df_train = pd.read_excel('../raw_data/train.xlsx')
-        df_dev = pd.read_excel('../raw_data/dev.xlsx')
-        df_test_a = pd.read_excel('../raw_data/test_a.xlsx')
+        # df_train = pd.read_excel('../raw_data/train.xlsx')
+        # df_dev = pd.read_excel('../raw_data/dev.xlsx')
+        # df_test_a = pd.read_excel('../raw_data/test_a.xlsx')
+        df_test_b = pd.read_excel('../raw_data/test_b_without_label.xlsx')
 
-        self.df_2_json(df_train,'../data/train.json')
-        self.df_2_json(df_dev,'../data/dev.json')
-        self.df_2_json(df_test_a,'../data/test_a.json')
+        # self.df_2_json(df_train,'../data/train.json')
+        # self.df_2_json(df_dev,'../data/dev.json')
+        # self.df_2_json(df_test_a,'../data/test_a.json')
+        self.df_2_json(df_test_b,'../data/test_b.json')
 
 p=CreateTrainData()
 p.run()

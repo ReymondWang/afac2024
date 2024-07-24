@@ -103,9 +103,12 @@ def switch_standard_name(raw_list: list, standard_name_list: list) -> list:
         if isinstance(raw_item, list):
             res.append(switch_standard_name(raw_item, standard_name_list))
         else:
-            switch_name_list = get_close_matches(raw_item, standard_name_list, n=1)
-            if len(switch_name_list) > 0:
-                res.append(switch_name_list[0])
+            if raw_item not in standard_name_list:
+                switch_name_list = get_close_matches(raw_item, standard_name_list, n=1)
+                if len(switch_name_list) > 0:
+                    res.append(switch_name_list[0])
+                else:
+                    res.append(raw_item)
             else:
                 res.append(raw_item)
     return res
